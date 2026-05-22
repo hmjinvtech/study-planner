@@ -16,7 +16,7 @@ export default function FocusTimerPage() {
 
       {/* Main Timer */}
       <DashboardCard title="Pomodoro Timer" icon="⏲">
-        <PomodoroTimer workDuration={25 * 60} breakDuration={5 * 60} />
+        <PomodoroTimer />
       </DashboardCard>
 
       {/* Benefits Section */}
