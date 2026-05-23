@@ -1,10 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Dashboard() {
+  const router = useRouter();
   const [today, setToday] = useState('');
-  const [stats] = useState({
+  const [completedTasks, setCompletedTasks] = useState<number[]>([]);
+  const [stats, setStats] = useState({
     completedToday: 8,
     upcomingTasks: 12,
     focusHoursToday: 4.5,
@@ -15,6 +18,24 @@ export default function Dashboard() {
     const date = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
     setToday(date);
   }, []);
+
+  // Handle task completion toggle
+  const handleTaskToggle = (index: number) => {
+    if (completedTasks.includes(index)) {
+      setCompletedTasks(completedTasks.filter(i => i !== index));
+      setStats(prev => ({ ...prev, completedToday: Math.max(0, prev.completedToday - 1) }));
+    } else {
+      setCompletedTasks([...completedTasks, index]);
+      setStats(prev => ({ ...prev, completedToday: prev.completedToday + 1, upcomingTasks: Math.max(0, prev.upcomingTasks - 1) }));
+    }
+  };
+
+  // Navigation handlers
+  const handleStartFocus = () => router.push('/focus');
+  const handleAddTask = () => router.push('/tasks');
+  const handleViewSchedule = () => router.push('/study');
+  const handleSettings = () => router.push('/settings');
+  const handleViewAllTasks = () => router.push('/tasks');
 
   const StatCard = ({ icon, label, value, subtext, gradient }: any) => (
     <div className="glass-effect-light rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-smooth group overflow-hidden">
@@ -30,12 +51,23 @@ export default function Dashboard() {
     </div>
   );
 
-  const QuickTaskItem = ({ title, time, priority }: any) => (
+  const QuickTaskItem = ({ title, time, priority, index }: any) => (
     <div className="glass-effect rounded-lg p-4 flex items-center justify-between border border-white/10 hover:border-white/20 transition-smooth group">
       <div className="flex items-center gap-3 flex-1">
-        <input type="checkbox" className="w-4 h-4 rounded" />
+        <input
+          type="checkbox"
+          className="w-4 h-4 rounded cursor-pointer accent-cyan-500"
+          checked={completedTasks.includes(index)}
+          onChange={() => handleTaskToggle(index)}
+        />
         <div>
-          <p className="text-sm font-medium text-white group-hover:text-cyan-400 transition-smooth">{title}</p>
+          <p className={`text-sm font-medium transition-smooth ${
+            completedTasks.includes(index)
+              ? 'line-through text-gray-500'
+              : 'text-white group-hover:text-cyan-400'
+          }`}>
+            {title}
+          </p>
           <p className="text-xs text-gray-500">{time}</p>
         </div>
       </div>
@@ -115,11 +147,16 @@ export default function Dashboard() {
         <div className="lg:col-span-2 glass-effect-light rounded-3xl p-8 border border-white/10">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-white">Today's Tasks</h2>
-            <button className="text-sm text-cyan-400 hover:text-cyan-300 transition-smooth">View All →</button>
+            <button
+              onClick={handleViewAllTasks}
+              className="text-sm text-cyan-400 hover:text-cyan-300 transition-smooth font-medium active:scale-95"
+            >
+              View All →
+            </button>
           </div>
           <div className="space-y-3">
             {recentTasks.map((task, idx) => (
-              <QuickTaskItem key={idx} {...task} />
+              <QuickTaskItem key={idx} {...task} index={idx} />
             ))}
           </div>
         </div>
@@ -177,17 +214,18 @@ export default function Dashboard() {
           <h3 className="text-lg font-bold text-white">Quick Actions</h3>
           <div className="grid grid-cols-2 gap-3">
             {[
-              { label: 'Start Focus Session', icon: '⏱️', color: 'cyan' },
-              { label: 'Add Task', icon: '➕', color: 'purple' },
-              { label: 'View Schedule', icon: '📅', color: 'blue' },
-              { label: 'Settings', icon: '⚙️', color: 'gray' },
+              { label: 'Start Focus Session', icon: '⏱️', handler: handleStartFocus },
+              { label: 'Add Task', icon: '➕', handler: handleAddTask },
+              { label: 'View Schedule', icon: '📅', handler: handleViewSchedule },
+              { label: 'Settings', icon: '⚙️', handler: handleSettings },
             ].map((action) => (
               <button
                 key={action.label}
-                className={`glass-effect rounded-lg p-4 border border-white/10 hover:border-white/20 transition-smooth active:scale-95 text-center group`}
+                onClick={action.handler}
+                className="glass-effect rounded-lg p-4 border border-white/10 hover:border-cyan-500/40 hover:bg-cyan-500/10 transition-smooth active:scale-95 text-center group"
               >
-                <p className="text-2xl mb-2">{action.icon}</p>
-                <p className="text-xs font-medium text-gray-300 group-hover:text-white transition-smooth">{action.label}</p>
+                <p className="text-2xl mb-2 group-hover:scale-110 transition-transform">{action.icon}</p>
+                <p className="text-xs font-medium text-gray-300 group-hover:text-cyan-300 transition-smooth">{action.label}</p>
               </button>
             ))}
           </div>
