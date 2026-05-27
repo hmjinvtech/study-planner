@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import TaskCard from './TaskCard';
 
 interface Task {
@@ -26,6 +26,11 @@ export default function TaskList({
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [filterPriority, setFilterPriority] = useState<'all' | 'high' | 'medium' | 'low'>('all');
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Sync tasks when initialTasks prop changes
+  useEffect(() => {
+    setTasks(initialTasks);
+  }, [initialTasks]);
 
   const toggleTask = (id: string) => {
     setTasks(
