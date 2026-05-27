@@ -56,10 +56,14 @@ export default function Navbar() {
         {isMenuOpen && (
           <div className="absolute top-20 right-4 w-40 lg:w-48 glass-effect-light rounded-lg overflow-hidden shadow-lg z-50 animate-in fade-in slide-in-from-top-2 duration-200">
             <div className="py-2">
-              {['Settings', 'Theme', 'Help', 'Logout'].map((item) => (
+              {['Settings', 'Theme', 'Help'].map((item) => (
                 <button
                   key={item}
                   className="w-full text-left px-4 py-2 text-xs lg:text-sm text-gray-300 hover:bg-white/10 transition-smooth"
+                  onClick={() => {
+                    if (item === 'Settings') window.location.href = '/settings';
+                    setIsMenuOpen(false);
+                  }}
                 >
                   {item}
                 </button>

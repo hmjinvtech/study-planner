@@ -8,10 +8,10 @@ export default function Dashboard() {
   const [today, setToday] = useState('');
   const [completedTasks, setCompletedTasks] = useState<number[]>([]);
   const [stats, setStats] = useState({
-    completedToday: 8,
-    upcomingTasks: 12,
-    focusHoursToday: 4.5,
-    studyStreak: 12,
+    completedToday: 0,
+    upcomingTasks: 0,
+    focusHoursToday: 0,
+    studyStreak: 0,
   });
 
   useEffect(() => {
@@ -87,18 +87,9 @@ export default function Dashboard() {
     </div>
   );
 
-  const upcomingDeadlines = [
-    { id: 1, title: 'Math Exam', date: 'May 25', time: '10:00 AM' },
-    { id: 2, title: 'Physics Assignment', date: 'May 27', time: '11:59 PM' },
-    { id: 3, title: 'Chemistry Lab Report', date: 'May 28', time: '2:00 PM' },
-  ];
+  const upcomingDeadlines: Array<{ id: number; title: string; date: string; time: string }> = [];
 
-  const recentTasks = [
-    { title: 'Complete Algebra Problems', time: '10:30 AM', priority: 'high' },
-    { title: 'Review Study Guide', time: '1:00 PM', priority: 'medium' },
-    { title: 'Group Project Discussion', time: '3:00 PM', priority: 'medium' },
-    { title: 'Organize Notes', time: '4:30 PM', priority: 'low' },
-  ];
+  const recentTasks: Array<{ title: string; time: string; priority: string }> = [];
 
   return (
     <div className="space-y-8 animate-fade-in-up">
@@ -158,9 +149,21 @@ export default function Dashboard() {
             </button>
           </div>
           <div className="space-y-3">
-            {recentTasks.map((task, idx) => (
-              <QuickTaskItem key={idx} {...task} index={idx} />
-            ))}
+            {recentTasks.length > 0 ? (
+              recentTasks.map((task, idx) => (
+                <QuickTaskItem key={idx} {...task} index={idx} />
+              ))
+            ) : (
+              <div className="glass-effect rounded-xl p-8 text-center border border-dashed border-white/20">
+                <p className="text-gray-400 text-sm mb-4">No tasks added yet</p>
+                <button 
+                  onClick={handleAddTask}
+                  className="btn-modern inline-flex items-center gap-2"
+                >
+                  ➕ Add Your First Task
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -171,15 +174,22 @@ export default function Dashboard() {
             <span className="badge-modern">Next 7 days</span>
           </div>
           <div className="space-y-3">
-            {upcomingDeadlines.map((deadline) => (
-              <div key={deadline.id} className="glass-effect rounded-xl p-4 border border-red-500/20 hover:border-red-500/40 transition-smooth group hover:bg-red-500/5">
-                <div className="flex items-start justify-between mb-2">
-                  <p className="text-sm font-semibold text-white group-hover:text-red-300 transition-smooth truncate flex-1">{deadline.title}</p>
+            {upcomingDeadlines.length > 0 ? (
+              upcomingDeadlines.map((deadline) => (
+                <div key={deadline.id} className="glass-effect rounded-xl p-4 border border-red-500/20 hover:border-red-500/40 transition-smooth group hover:bg-red-500/5">
+                  <div className="flex items-start justify-between mb-2">
+                    <p className="text-sm font-semibold text-white group-hover:text-red-300 transition-smooth truncate flex-1">{deadline.title}</p>
+                  </div>
+                  <p className="text-xs text-gray-500 mb-1">{deadline.date}</p>
+                  <p className="text-xs text-gray-500 font-medium">📍 {deadline.time}</p>
                 </div>
-                <p className="text-xs text-gray-500 mb-1">{deadline.date}</p>
-                <p className="text-xs text-gray-500 font-medium">📍 {deadline.time}</p>
+              ))
+            ) : (
+              <div className="glass-effect rounded-xl p-8 text-center border border-dashed border-white/20">
+                <p className="text-gray-400 text-sm mb-4">No upcoming deadlines</p>
+                <p className="text-xs text-gray-500">Your deadlines will appear here</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>
