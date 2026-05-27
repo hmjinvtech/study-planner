@@ -38,46 +38,48 @@ export default function Dashboard() {
   const handleViewAllTasks = () => router.push('/tasks');
 
   const StatCard = ({ icon, label, value, subtext, gradient }: any) => (
-    <div className="glass-effect-light rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-smooth group overflow-hidden">
-      <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
-      <div className="relative space-y-3">
+    <div className="modern-card group">
+      <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-2xl`} />
+      <div className="relative space-y-4">
         <div className="flex items-center justify-between">
-          <p className="text-sm font-medium text-gray-400">{label}</p>
-          <span className="text-2xl">{icon}</span>
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">{label}</p>
+          <span className="text-2xl group-hover:scale-125 transition-transform">{icon}</span>
         </div>
-        <p className="text-4xl font-bold text-white">{value}</p>
-        <p className="text-xs text-gray-400">{subtext}</p>
+        <div>
+          <p className="text-3xl lg:text-4xl font-bold text-white mb-1">{value}</p>
+          <p className="text-xs text-gray-500">{subtext}</p>
+        </div>
       </div>
     </div>
   );
 
   const QuickTaskItem = ({ title, time, priority, index }: any) => (
-    <div className="glass-effect rounded-lg p-4 flex items-center justify-between border border-white/10 hover:border-white/20 transition-smooth group">
-      <div className="flex items-center gap-3 flex-1">
+    <div className="glass-effect rounded-xl p-4 flex items-center justify-between border border-white/10 hover:border-white/20 transition-smooth group hover:bg-white/5">
+      <div className="flex items-center gap-3 flex-1 min-w-0">
         <input
           type="checkbox"
-          className="w-4 h-4 rounded cursor-pointer accent-cyan-500"
+          className="w-5 h-5 rounded-md cursor-pointer accent-cyan-500 flex-shrink-0 hover:scale-110 transition-transform"
           checked={completedTasks.includes(index)}
           onChange={() => handleTaskToggle(index)}
         />
-        <div>
-          <p className={`text-sm font-medium transition-smooth ${
+        <div className="min-w-0 flex-1">
+          <p className={`text-sm font-medium transition-all truncate ${
             completedTasks.includes(index)
               ? 'line-through text-gray-500'
-              : 'text-white group-hover:text-cyan-400'
+              : 'text-white group-hover:text-cyan-300'
           }`}>
             {title}
           </p>
-          <p className="text-xs text-gray-500">{time}</p>
+          <p className="text-xs text-gray-500 truncate">{time}</p>
         </div>
       </div>
       <span
-        className={`px-3 py-1 rounded text-xs font-medium ${
+        className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap flex-shrink-0 ml-2 ${
           priority === 'high'
-            ? 'bg-red-500/20 text-red-300'
+            ? 'bg-red-500/20 text-red-300 border border-red-500/30'
             : priority === 'medium'
-              ? 'bg-amber-500/20 text-amber-300'
-              : 'bg-green-500/20 text-green-300'
+              ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+              : 'bg-green-500/20 text-green-300 border border-green-500/30'
         }`}
       >
         {priority}
@@ -144,14 +146,15 @@ export default function Dashboard() {
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Quick Tasks */}
-        <div className="lg:col-span-2 glass-effect-light rounded-3xl p-8 border border-white/10">
+        <div className="lg:col-span-2 modern-card">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-white">Today's Tasks</h2>
             <button
               onClick={handleViewAllTasks}
-              className="text-sm text-cyan-400 hover:text-cyan-300 transition-smooth font-medium active:scale-95"
+              className="text-sm font-semibold text-cyan-400 hover:text-cyan-300 transition-smooth active:scale-95 group flex items-center gap-1"
             >
-              View All →
+              View All
+              <span className="group-hover:translate-x-1 transition-transform">→</span>
             </button>
           </div>
           <div className="space-y-3">
@@ -162,20 +165,19 @@ export default function Dashboard() {
         </div>
 
         {/* Upcoming Deadlines */}
-        <div className="glass-effect-light rounded-3xl p-8 border border-white/10">
+        <div className="modern-card">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-white">Deadlines</h2>
-            <span className="text-xs text-gray-400">Next 7 days</span>
+            <h2 className="text-xl font-bold text-white">⏰ Deadlines</h2>
+            <span className="badge-modern">Next 7 days</span>
           </div>
           <div className="space-y-3">
             {upcomingDeadlines.map((deadline) => (
-              <div key={deadline.id} className="glass-effect rounded-lg p-4 border border-red-500/20 hover:border-red-500/40 transition-smooth group">
+              <div key={deadline.id} className="glass-effect rounded-xl p-4 border border-red-500/20 hover:border-red-500/40 transition-smooth group hover:bg-red-500/5">
                 <div className="flex items-start justify-between mb-2">
-                  <p className="text-sm font-semibold text-white group-hover:text-red-300 transition-smooth">{deadline.title}</p>
-                  <span className="text-lg">⏰</span>
+                  <p className="text-sm font-semibold text-white group-hover:text-red-300 transition-smooth truncate flex-1">{deadline.title}</p>
                 </div>
-                <p className="text-xs text-gray-400">{deadline.date}</p>
-                <p className="text-xs text-gray-500 mt-1">{deadline.time}</p>
+                <p className="text-xs text-gray-500 mb-1">{deadline.date}</p>
+                <p className="text-xs text-gray-500 font-medium">📍 {deadline.time}</p>
               </div>
             ))}
           </div>
@@ -185,22 +187,26 @@ export default function Dashboard() {
       {/* Bottom Section - Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Study Progress */}
-        <div className="glass-effect-light rounded-2xl p-6 border border-white/10 space-y-4">
-          <h3 className="text-lg font-bold text-white">Weekly Progress</h3>
-          <div className="space-y-3">
+        <div className="modern-card">
+          <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+            📊 Weekly Progress
+          </h3>
+          <div className="space-y-5">
             {[
               { label: 'Study Sessions', value: 12, max: 15, color: 'from-purple-500 to-pink-500' },
               { label: 'Focus Hours', value: 24, max: 30, color: 'from-cyan-500 to-blue-500' },
               { label: 'Tasks Completed', value: 18, max: 20, color: 'from-green-500 to-emerald-500' },
             ].map((item) => (
               <div key={item.label}>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-medium text-gray-400">{item.label}</span>
-                  <span className="text-sm font-bold text-white">{item.value}/{item.max}</span>
+                <div className="flex items-center justify-between mb-2.5">
+                  <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">{item.label}</span>
+                  <span className="text-sm font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                    {item.value}/{item.max}
+                  </span>
                 </div>
-                <div className="w-full bg-white/5 rounded-full h-2 overflow-hidden">
+                <div className="w-full bg-white/5 rounded-full h-2.5 overflow-hidden border border-white/5">
                   <div
-                    className={`h-full bg-gradient-to-r ${item.color} rounded-full transition-all duration-500`}
+                    className={`h-full bg-gradient-to-r ${item.color} rounded-full transition-all duration-500 shadow-lg shadow-purple-500/20`}
                     style={{ width: `${(item.value / item.max) * 100}%` }}
                   />
                 </div>
@@ -210,22 +216,24 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Links */}
-        <div className="glass-effect-light rounded-2xl p-6 border border-white/10 space-y-4">
-          <h3 className="text-lg font-bold text-white">Quick Actions</h3>
+        <div className="modern-card">
+          <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+            ⚡ Quick Actions
+          </h3>
           <div className="grid grid-cols-2 gap-3">
             {[
-              { label: 'Start Focus Session', icon: '⏱️', handler: handleStartFocus },
+              { label: 'Start Focus', icon: '⏱️', handler: handleStartFocus },
               { label: 'Add Task', icon: '➕', handler: handleAddTask },
-              { label: 'View Schedule', icon: '📅', handler: handleViewSchedule },
+              { label: 'Schedule', icon: '📅', handler: handleViewSchedule },
               { label: 'Settings', icon: '⚙️', handler: handleSettings },
             ].map((action) => (
               <button
                 key={action.label}
                 onClick={action.handler}
-                className="glass-effect rounded-lg p-4 border border-white/10 hover:border-cyan-500/40 hover:bg-cyan-500/10 transition-smooth active:scale-95 text-center group"
+                className="glass-effect rounded-xl p-4 border border-white/10 hover:border-cyan-500/40 hover:bg-gradient-to-br hover:from-cyan-500/10 hover:to-blue-500/10 transition-all active:scale-95 text-center group"
               >
-                <p className="text-2xl mb-2 group-hover:scale-110 transition-transform">{action.icon}</p>
-                <p className="text-xs font-medium text-gray-300 group-hover:text-cyan-300 transition-smooth">{action.label}</p>
+                <p className="text-2xl mb-2 group-hover:scale-125 transition-transform group-hover:animate-float">{action.icon}</p>
+                <p className="text-xs font-semibold text-gray-300 group-hover:text-white transition-colors">{action.label}</p>
               </button>
             ))}
           </div>

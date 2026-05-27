@@ -4,15 +4,20 @@ import { useState, useEffect, useRef } from 'react';
 
 type Mode = 'focus' | 'break';
 
-export default function PomodoroTimer() {
+interface PomodoroTimerProps {
+  workDuration?: number;
+  breakDuration?: number;
+}
+
+export default function PomodoroTimer({ workDuration = 25 * 60, breakDuration = 5 * 60 }: PomodoroTimerProps = {}) {
   const [mode, setMode] = useState<Mode>('focus');
-  const [timeLeft, setTimeLeft] = useState(25 * 60); // 25 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(workDuration); // Default 25 minutes in seconds
   const [isRunning, setIsRunning] = useState(false);
   const [sessionsCompleted, setSessionsCompleted] = useState(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const FOCUS_TIME = 25 * 60; // 25 minutes
-  const BREAK_TIME = 5 * 60; // 5 minutes
+  const FOCUS_TIME = workDuration; // Configurable focus time
+  const BREAK_TIME = breakDuration; // Configurable break time
   const totalTime = mode === 'focus' ? FOCUS_TIME : BREAK_TIME;
   const progress = ((totalTime - timeLeft) / totalTime) * 100;
 
